@@ -1,6 +1,7 @@
 import { DataGrid } from '../DataGrid';
 import { columns } from '../utils';
 import { Data } from '../../../Global/Interfaces';
+import { Pagination } from '../../../components/Pagination';
 
 import { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -21,9 +22,19 @@ const DataGridContainer = () => {
   useEffect(() => {
     makeApiCall();
   }, []);
+
+  const changePage = (count: number): void => {
+    console.log('Count', count);
+  };
   return (
     <>
       <h1>Data Grid Widget</h1> <DataGrid Cols={columns} Rows={data} />
+      <Pagination
+        totalItems={137}
+        pageSize={10}
+        active={1}
+        onSelect={changePage}
+      />
     </>
   );
 };
