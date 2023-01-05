@@ -1,4 +1,4 @@
-import { Data } from '../../Global/Interfaces';
+import { Data } from '../../global/Interfaces';
 export interface Column {
   label: string;
   key: string;

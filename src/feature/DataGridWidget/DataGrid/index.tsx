@@ -1,7 +1,7 @@
 import { Table } from 'reactstrap';
 import { Column } from '../utils';
-import { Data } from '../../../Global/Interfaces';
-
+import { Data } from '../../../global/Interfaces';
+import './style.css';
 interface Props {
   Cols: Column[];
   Rows: Data[];

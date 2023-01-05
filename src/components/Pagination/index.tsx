@@ -5,6 +5,8 @@ interface Props {
   pageSize: number;
   active: number;
   onSelect(count: number): void;
+  onNextPage(): void;
+  onPreviousPage(): void;
 }
 
 const CustomPagination = ({
@@ -12,6 +14,8 @@ const CustomPagination = ({
   pageSize,
   onSelect,
   active,
+  onNextPage,
+  onPreviousPage,
 }: Props) => {
   const renderPaginationItems = (): JSX.Element[] => {
     console.log('Active', active);
@@ -38,11 +42,11 @@ const CustomPagination = ({
     <div className="pagination-container">
       <Pagination>
         <PaginationItem disabled={active === 1}>
-          <PaginationLink href="#" previous />
+          <PaginationLink onClick={onPreviousPage} href="#" previous />
         </PaginationItem>
         {renderPaginationItems()}
         <PaginationItem>
-          <PaginationLink href="#" last />
+          <PaginationLink href="#" last onClick={onNextPage} />
         </PaginationItem>
       </Pagination>
     </div>

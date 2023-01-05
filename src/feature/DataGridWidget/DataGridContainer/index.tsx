@@ -1,39 +1,57 @@
 import { DataGrid } from '../DataGrid';
 import { columns } from '../utils';
-import { Data } from '../../../Global/Interfaces';
+import { Data } from '../../../global/Interfaces';
 import { Pagination } from '../../../components/Pagination';
 
 import { useEffect, useState } from 'react';
-import axios from 'axios';
-const DataGridContainer = () => {
-  const [data, setData] = useState<Data[]>([]);
-  const makeApiCall = async () => {
-    try {
-      const response = await axios(
-        'https://us-central1-fir-apps-services.cloudfunctions.net/transactions'
-      );
-      const { data: responseData } = response.data;
-      console.log('Response', responseData);
-      setData([...responseData]);
-    } catch (error) {
-      alert(error);
-    }
-  };
-  useEffect(() => {
-    makeApiCall();
-  }, []);
+import { useDispatch, useSelector } from 'react-redux';
 
-  const changePage = (count: number): void => {
-    console.log('Count', count);
+import { DGState } from '../../../redux-store/reducer';
+import {
+  nextPageData,
+  previousPageData,
+  moveToSpecificPage,
+} from '../../../redux-store/actions';
+
+const DataGridContainer = () => {
+  const currentData = useSelector<DGState, Data[]>(
+    (state) => state.currentData
+  );
+
+  const totalCount = useSelector<DGState, number>((state) => state.totalCount);
+
+  const [active, setActive] = useState<number>(1);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {}, [dispatch, active]);
+
+  const movePage = (page: number): void => {
+    console.log(page);
+    setActive(page);
+    dispatch(moveToSpecificPage(page));
   };
+
+  const nextPage = () => {
+    setActive(active + 1);
+    dispatch(nextPageData());
+  };
+
+  const previousPage = () => {
+    setActive(active - 1);
+    dispatch(previousPageData());
+  };
+
   return (
     <>
-      <h1>Data Grid Widget</h1> <DataGrid Cols={columns} Rows={data} />
+      <DataGrid Cols={columns} Rows={currentData} />
       <Pagination
-        totalItems={137}
+        totalItems={totalCount}
         pageSize={10}
-        active={1}
-        onSelect={changePage}
+        active={active}
+        onSelect={movePage}
+        onNextPage={nextPage}
+        onPreviousPage={previousPage}
       />
     </>
   );
