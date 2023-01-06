@@ -1,10 +1,15 @@
-import { Table } from 'reactstrap';
+import { Table, Button, Row } from 'reactstrap';
 import { Column } from '../utils';
 import { Data } from '../../../global/Interfaces';
+import { useState } from 'react';
+import { getProperty } from '../utils';
+import ConfigurationModal from '../ConfigurationModal';
 import './style.css';
 interface Props {
   Cols: Column[];
   Rows: Data[];
+  delCol(key: string): void;
+  addCol(column: Column): void;
 }
 const renderColumns = (columns: Column[]): JSX.Element[] => {
   return columns.map(({ label, key }) => {
@@ -12,30 +17,50 @@ const renderColumns = (columns: Column[]): JSX.Element[] => {
   });
 };
 
-const renderRows = (rows: Data[]) => {
+const renderRows = (rows: Data[] | any[], cols: Column[]) => {
   return rows.map((row, index) => {
     return (
       <tr key={index}>
-        <th scope="row">{index + 1}</th>
-        <td>{row.name}</td>
-        <td>{row.date}</td>
-        <td>{row.category}</td>
-        <td>{row.amount}</td>
-        <td>{row.created_at}</td>
+        {cols.map((col, cindex) => {
+          return (
+            <>
+              <td>{getProperty(row, col.key)}</td>
+            </>
+          );
+        })}
       </tr>
     );
   });
 };
 
-const DataGrid = ({ Cols, Rows }: Props) => {
+const DataGrid = ({ Cols, Rows, delCol, addCol }: Props) => {
+  const [modal, setModal] = useState<boolean>(false);
+  const toggleConfigModal = () => {
+    setModal(!modal);
+  };
+
   return (
     <div>
-      <h3>Data Grid</h3>
-      <Table bordered size="sm">
+      <ConfigurationModal
+        Cols={Cols}
+        modal={modal}
+        toggleModal={toggleConfigModal}
+        deleteColumn={delCol}
+        addColumn={addCol}
+      />
+      <h3 className="text-center my-2">Data Grid</h3>
+      <Button
+        className="btn btn-md btn-warning my-2 mx-4"
+        onClick={toggleConfigModal}
+      >
+        {' '}
+        Configure{' '}
+      </Button>
+      <Table style={{ height: '500px' }} bordered size="md">
         <thead>
           <tr>{renderColumns(Cols)}</tr>
         </thead>
-        <tbody>{renderRows(Rows)}</tbody>
+        <tbody>{renderRows(Rows, Cols)}</tbody>
       </Table>
     </div>
   );
