@@ -1,5 +1,5 @@
 import { DataGrid } from '../DataGrid';
-import { columns } from '../utils';
+import { Column, columns } from '../utils';
 import { Data } from '../../../global/Interfaces';
 import { Pagination } from '../../../components/Pagination';
 
@@ -24,8 +24,18 @@ const DataGridContainer = () => {
 
   const dispatch = useDispatch();
 
+  const [cols, setCols] = useState<Column[]>(columns);
+
   useEffect(() => {}, [dispatch, active]);
 
+  const deleteCol = (key: string) => {
+    console.log(key);
+    setCols([...cols.filter((col) => col.key !== key)]);
+  };
+
+  const addColumn = (column: Column): void => {
+    setCols([...cols, column]);
+  };
   const movePage = (page: number): void => {
     console.log(page);
     setActive(page);
@@ -44,7 +54,12 @@ const DataGridContainer = () => {
 
   return (
     <>
-      <DataGrid Cols={columns} Rows={currentData} />
+      <DataGrid
+        Cols={cols}
+        Rows={currentData}
+        delCol={deleteCol}
+        addCol={addColumn}
+      />
       <Pagination
         totalItems={totalCount}
         pageSize={10}

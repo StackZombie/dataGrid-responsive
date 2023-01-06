@@ -5,13 +5,11 @@ export interface Column {
   type: string;
 }
 export const columns: Column[] = [
-  { label: '#', key: '#', type: 'string' },
-
-  { label: 'Name', key: 'name', type: 'string' },
+  { label: 'Name', key: 'name', type: 'text' },
 
   { label: 'Date', key: 'date', type: 'date' },
 
-  { label: 'Catagory', key: 'catagory', type: 'string' },
+  { label: 'Category', key: 'category', type: 'text' },
 
   { label: 'Amount', key: 'amount', type: 'number' },
 
@@ -19,3 +17,7 @@ export const columns: Column[] = [
 ];
 
 export const rows: Data[] = [];
+
+export function getProperty<T, K extends keyof T>(o: T, propertyName: K): T[K] {
+  return o[propertyName]; // o[propertyName] is of type T[K]
+}
